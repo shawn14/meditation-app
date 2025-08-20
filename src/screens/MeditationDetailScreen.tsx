@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import MeditationPlayer from '../components/MeditationPlayer';
 import { AudioTrack } from '../services/audioService';
 import { haptics } from '../utils/haptics';
+import { openSourceAudioLibrary, getFeaturedAudio } from '../data/openSourceAudio';
+import audioService from '../services/audioService';
 
 const { width } = Dimensions.get('window');
 
@@ -31,13 +33,105 @@ interface Meditation {
 export default function MeditationDetailScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { meditation } = route.params as { meditation: Meditation };
+  const [meditation, setMeditation] = useState<Meditation | undefined>(undefined);
   const [showPlayer, setShowPlayer] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
 
+  useEffect(() => {
+    const params = route.params as any || {};
+    
+    // Debug logging
+    console.log('MeditationDetailScreen - route.params:', route.params);
+
+    // Handle both navigation parameter formats
+    let meditationData: Meditation | undefined = params.meditation;
+    
+    // If navigation came from HomeScreen with different params structure
+    if (!meditationData && params.title) {
+      // Create stable ID based on title and type
+      const stableId = `${params.title}-${params.type || params.category || 'default'}`.toLowerCase().replace(/\s+/g, '-');
+      
+      // Create a specific mapping for each meditation type to ensure unique audio
+      let audioSource = null;
+      let audioIndex = 0;
+      
+      if (params.title === 'Morning Mindfulness') {
+        audioIndex = 0; // Rain sounds (Song-1)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.title === 'Deep Sleep Stories') {
+        audioIndex = 1; // Ocean waves (Song-2)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.title === 'Anxiety Relief') {
+        audioIndex = 2; // Forest ambience (Song-3)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.type === 'breathe' || params.title === 'Breathe') {
+        audioIndex = 3; // Tibetan bowl (Song-4)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.type === 'focus' || params.title === 'Focus') {
+        audioIndex = 4; // Meditation bell (Song-5)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.type === 'relax' || params.title === 'Relax') {
+        audioIndex = 5; // Ambient-1 (Song-6)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else if (params.title === 'Timer') {
+        audioIndex = 6; // Ambient-2 (Song-7)
+        audioSource = openSourceAudioLibrary[audioIndex];
+      } else {
+        // Use a hash of the title to select a consistent but varied audio
+        const hash = params.title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        audioIndex = hash % openSourceAudioLibrary.length;
+        audioSource = openSourceAudioLibrary[audioIndex];
+      }
+    
+      console.log(`MeditationDetailScreen - Selected audio: ${audioSource?.title} (${audioSource?.uri}) for meditation: ${params.title}`);
+
+      meditationData = {
+        id: stableId,
+        title: params.title,
+        duration: params.duration?.replace(' min', '') || '10',
+        instructor: audioSource?.artist || 'Nature Sounds',
+        description: `Experience the calming effects of ${params.title}. This session will help you find peace and tranquility. ${audioSource?.attribution ? 'Audio: ' + audioSource.attribution : ''}`,
+        benefits: ['Reduces stress', 'Improves focus', 'Better sleep', 'Enhanced well-being'],
+        audioUrl: audioSource?.uri || openSourceAudioLibrary[0].uri,
+        isPro: params.category === 'featured'
+      };
+    }
+
+    console.log('MeditationDetailScreen - meditation:', meditationData);
+    setMeditation(meditationData);
+    
+    // Reset player state when navigating to a new meditation
+    setShowPlayer(false);
+    setIsFavorite(false);
+    setIsDownloaded(false);
+  }, [route.params]);
+
+  // Clean up audio when navigating away
+  useEffect(() => {
+    return () => {
+      // Stop any playing audio when leaving the screen
+      audioService.stop().catch(err => console.log('Error stopping audio:', err));
+    };
+  }, []);
+
+  if (!meditation) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: '#FFFFFF', fontSize: 16 }}>No meditation data available</Text>
+        <TouchableOpacity
+          style={{ marginTop: 20, padding: 10 }}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={{ color: '#6B4EFF', fontSize: 16 }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   const handlePlay = async () => {
     await haptics.meditationStart();
+    console.log('MeditationDetailScreen - Playing meditation:', meditation.title, 'with audio URL:', meditation.audioUrl);
     const track: AudioTrack = {
       id: meditation.id,
       title: meditation.title,
@@ -120,28 +214,31 @@ export default function MeditationDetailScreen() {
             <Text style={styles.sectionTitle}>Similar Sessions</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[
-                { id: '1', title: 'Calm Mind', duration: '10 min', colors: ['#4ECDC4', '#44A08D'], icon: 'leaf' },
-                { id: '2', title: 'Focus Flow', duration: '15 min', colors: ['#667eea', '#764ba2'], icon: 'eye' },
-                { id: '3', title: 'Deep Rest', duration: '20 min', colors: ['#FF6B6B', '#FF8E53'], icon: 'moon' }
+                { id: '1', title: 'Calm Mind', duration: '10 min', colors: ['#4ECDC4', '#44A08D'], icon: 'leaf', audioIndex: 7 },
+                { id: '2', title: 'Focus Flow', duration: '15 min', colors: ['#667eea', '#764ba2'], icon: 'eye', audioIndex: 8 },
+                { id: '3', title: 'Deep Rest', duration: '20 min', colors: ['#FF6B6B', '#FF8E53'], icon: 'moon', audioIndex: 9 }
               ].map((item) => (
                 <TouchableOpacity 
                   key={item.id} 
                   style={styles.relatedCard}
                   onPress={() => {
                     haptics.light();
+                    // Get unique audio for each related session
+                    const relatedAudio = openSourceAudioLibrary[item.audioIndex] || openSourceAudioLibrary[0];
+                    console.log(`Similar session ${item.title} - Using audio index ${item.audioIndex}: ${relatedAudio?.title} (${relatedAudio?.uri})`);
                     // Navigate to the same screen with new meditation data
-                    navigation.push('MeditationDetail', {
+                    navigation.push('MeditationDetail' as never, {
                       meditation: {
                         id: `related-${item.id}`,
                         title: item.title,
                         duration: item.duration.replace(' min', ''),
-                        instructor: meditation.instructor,
-                        description: `Experience the calming effects of ${item.title.toLowerCase()}.`,
+                        instructor: relatedAudio.artist || 'Meditation Guide',
+                        description: `Experience the calming effects of ${item.title.toLowerCase()}. ${relatedAudio.attribution ? 'Audio: ' + relatedAudio.attribution : ''}`,
                         benefits: ['Reduces stress', 'Improves focus', 'Better sleep'],
-                        audioUrl: meditation.audioUrl, // Using same audio for demo
+                        audioUrl: relatedAudio.uri,
                         isPro: false
                       }
-                    });
+                    } as never);
                   }}
                 >
                   <LinearGradient
@@ -204,6 +301,7 @@ export default function MeditationDetailScreen() {
       </View>
 
       <MeditationPlayer
+        key={meditation.id}
         visible={showPlayer}
         track={
           showPlayer
@@ -215,7 +313,10 @@ export default function MeditationDetailScreen() {
               }
             : null
         }
-        onClose={() => setShowPlayer(false)}
+        onClose={() => {
+          console.log('MeditationPlayer closed');
+          setShowPlayer(false);
+        }}
       />
     </>
   );

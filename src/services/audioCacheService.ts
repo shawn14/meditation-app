@@ -184,6 +184,29 @@ class AudioCacheService {
     };
   }
 
+  async clearAllCache(): Promise<void> {
+    try {
+      console.log('Clearing all audio cache...');
+      
+      // Delete all cached files
+      for (const cached of this.cacheMetadata) {
+        try {
+          await FileSystem.deleteAsync(cached.localPath, { idempotent: true });
+        } catch (error) {
+          console.error(`Failed to delete ${cached.localPath}:`, error);
+        }
+      }
+      
+      // Clear metadata
+      this.cacheMetadata = [];
+      await this.saveCacheMetadata();
+      
+      console.log('Audio cache cleared successfully');
+    } catch (error) {
+      console.error('Error clearing cache:', error);
+    }
+  }
+
   async preloadFeaturedAudio(sources: AudioSource[]) {
     const promises = sources.map(source => 
       this.cacheAudio(source).catch(error => {

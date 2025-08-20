@@ -92,18 +92,20 @@ export default function SleepScreen({ navigation }: any) {
   const handlePlayStory = (story: SleepStory) => {
     const audioSource = sleepAudioSources.find(a => a.id === story.id);
     if (audioSource) {
-      navigation.navigate('MeditationDetail', { 
-        meditation: {
-          id: story.id,
-          title: story.title,
-          duration: story.duration.replace(' min', ''),
-          instructor: story.narrator,
-          description: `A relaxing sleep story featuring ${audioSource.title}. ${audioSource.attribution ? 'Audio: ' + audioSource.attribution : ''}`,
-          benefits: ['Better sleep', 'Relaxation', 'Stress relief'],
-          audioUrl: audioSource.uri,
-          isPro: story.isPro
-        }
-      });
+      const meditationData = {
+        id: story.id,
+        title: story.title,
+        duration: story.duration.replace(' min', ''),
+        instructor: story.narrator,
+        description: `A relaxing sleep story featuring ${audioSource.title}. ${audioSource.attribution ? 'Audio: ' + audioSource.attribution : ''}`,
+        benefits: ['Better sleep', 'Relaxation', 'Stress relief'],
+        audioUrl: audioSource.uri,
+        isPro: story.isPro
+      };
+      console.log('SleepScreen - Navigating with meditation:', meditationData);
+      navigation.push('MeditationDetail' as never, { meditation: meditationData } as never);
+    } else {
+      console.log('SleepScreen - No audio source found for story:', story);
     }
   };
 
@@ -206,7 +208,7 @@ export default function SleepScreen({ navigation }: any) {
                 // Use the first ambient audio as the featured story
                 const featuredAudio = sleepAudioSources.find(a => a.id === 'ambient-1');
                 if (featuredAudio) {
-                  navigation.navigate('MeditationDetail', { 
+                  navigation.push('MeditationDetail' as never, { 
                     meditation: {
                       id: 'featured-sleep',
                       title: 'The Lavender Fields',

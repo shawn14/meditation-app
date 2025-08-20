@@ -4,8 +4,9 @@ import { AudioSource } from '../types/audio';
 // These URLs point to freely available meditation and nature sounds
 // All audio is either CC0, Creative Commons, or Public Domain licensed
 //
-// Note: Some URLs may require CORS headers or may not work in all environments.
-// Alternative sources for free meditation audio:
+// TEMPORARY: Currently using SoundHelix demo URLs as placeholders
+// These are different songs (Song-1 through Song-11) that work for testing
+// In production, replace with actual meditation/nature sounds from:
 // - FreePD.com - Public domain music
 // - Freesound.org - CC-licensed sound effects (requires API key for downloads)
 // - OpenGameArt.org - Game audio that works well for meditation
@@ -23,34 +24,34 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'rain-1',
     title: 'Gentle Rain',
     artist: 'Nature Sounds',
-    uri: 'https://cdn.freesound.org/previews/531/531947_10565178-lq.mp3', // Gentle rain ambience
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Temporary working URL - rain sound
     duration: 600,
     category: 'nature',
     license: 'CC0',
     attribution: 'Rain ambience | Freesound.org | CC0',
-    tags: ['rain', 'calm', 'sleep', 'relaxation']
+    tags: ['rain', 'calm', 'sleep', 'relaxation', 'relax']
   },
   {
     id: 'ocean-waves-1',
     title: 'Ocean Waves',
     artist: 'Nature Recordings',
-    uri: 'https://cdn.freesound.org/previews/461/461384_8995557-lq.mp3', // Ocean waves on shore
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', // Temporary working URL - ocean waves
     duration: 480,
     category: 'nature',
     license: 'CC0',
     attribution: 'Ocean waves | Freesound.org | CC0',
-    tags: ['ocean', 'waves', 'beach', 'sleep']
+    tags: ['ocean', 'waves', 'beach', 'sleep', 'relax']
   },
   {
     id: 'forest-ambience-1',
     title: 'Forest Ambience',
     artist: 'Field Recordings',
-    uri: 'https://cdn.freesound.org/previews/567/567901_11525614-lq.mp3', // Forest birds ambience
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', // Temporary working URL - forest ambience
     duration: 720,
     category: 'nature',
     license: 'CC-BY',
     attribution: 'Forest birds | Freesound.org | CC BY 3.0',
-    tags: ['forest', 'birds', 'nature', 'morning']
+    tags: ['forest', 'birds', 'nature', 'morning', 'focus']
   },
 
   // Tibetan Bowls & Meditation Bells
@@ -58,23 +59,23 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'tibetan-bowl-1',
     title: 'Tibetan Singing Bowl',
     artist: 'Meditation Sounds',
-    uri: 'https://cdn.freesound.org/previews/368/368739_6893686-lq.mp3', // Tibetan singing bowl
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', // Temporary working URL - singing bowl
     duration: 180,
     category: 'meditation',
     license: 'CC0',
     attribution: 'Singing bowl | Freesound.org | CC0',
-    tags: ['tibetan', 'bowl', 'meditation', 'mindfulness']
+    tags: ['tibetan', 'bowl', 'meditation', 'mindfulness', 'breathe']
   },
   {
     id: 'meditation-bell-1',
     title: 'Meditation Bell',
     artist: 'Mindfulness Tools',
-    uri: 'https://cdn.freesound.org/previews/411/411089_1987725-lq.mp3', // Meditation bell chime
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', // Temporary working URL - meditation bell
     duration: 60,
     category: 'meditation',
     license: 'CC0',
     attribution: 'Meditation bell | Freesound.org | CC0',
-    tags: ['bell', 'chime', 'meditation', 'timer']
+    tags: ['bell', 'chime', 'meditation', 'timer', 'focus']
   },
 
   // Ambient Music - CC Licensed
@@ -82,18 +83,18 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'ambient-1',
     title: 'Cosmic Dreams',
     artist: 'Ambient Collection',
-    uri: 'https://freepd.com/music/Meditation%20Impromptu%2001.mp3', // Ambient meditation music
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3', // Temporary working URL - ambient music
     duration: 420,
     category: 'ambient',
     license: 'CC0',
     attribution: 'Meditation Impromptu | FreePD.com | CC0',
-    tags: ['ambient', 'calm', 'space', 'relaxation']
+    tags: ['ambient', 'calm', 'space', 'relaxation', 'relax']
   },
   {
     id: 'ambient-2',
     title: 'Ethereal Journey',
     artist: 'Ambient Soundscapes',
-    uri: 'https://freepd.com/music/Meditation%20Impromptu%2002.mp3', // Ethereal ambient soundscape
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3', // Temporary working URL - ethereal ambient
     duration: 360,
     category: 'ambient',
     license: 'CC0',
@@ -106,7 +107,7 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'binaural-theta-1',
     title: 'Theta Waves (6Hz)',
     artist: 'Binaural Generator',
-    uri: 'https://cdn.freesound.org/previews/437/437969_8415217-lq.mp3', // Deep meditation tone
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3', // Temporary working URL - theta waves
     duration: 900,
     category: 'binaural',
     license: 'CC-BY',
@@ -117,7 +118,7 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'binaural-delta-1',
     title: 'Delta Waves (3Hz)',
     artist: 'Sleep Frequencies',
-    uri: 'https://cdn.freesound.org/previews/268/268812_4940665-lq.mp3', // Relaxation frequency
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3', // Temporary working URL - delta waves
     duration: 900,
     category: 'binaural',
     license: 'CC-BY',
@@ -130,18 +131,18 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'white-noise-1',
     title: 'Pure White Noise',
     artist: 'Noise Generator',
-    uri: 'https://cdn.freesound.org/previews/387/387876_7413172-lq.mp3', // White noise for focus
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3', // Temporary working URL - white noise
     duration: 600,
     category: 'white_noise',
     license: 'CC0',
     attribution: 'White noise | Freesound.org | CC0',
-    tags: ['white-noise', 'sleep', 'focus', 'concentration']
+    tags: ['white-noise', 'sleep', 'focus', 'concentration', 'study']
   },
   {
     id: 'pink-noise-1',
     title: 'Soft Pink Noise',
     artist: 'Noise Generator',
-    uri: 'https://cdn.freesound.org/previews/387/387877_7413172-lq.mp3', // Pink noise for sleep
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3', // Temporary working URL - pink noise
     duration: 600,
     category: 'white_noise',
     license: 'CC0',

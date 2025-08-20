@@ -14,6 +14,7 @@ import Slider from '@react-native-community/slider';
 import { BlurView } from 'expo-blur';
 import { AVPlaybackStatus } from 'expo-av';
 import audioService, { AudioTrack, AudioError } from '../services/audioService';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ interface MeditationPlayerProps {
 }
 
 export default function MeditationPlayer({ visible, track, onClose }: MeditationPlayerProps) {
+  const navigation = useNavigation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -120,6 +122,12 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
     loadTrack();
   };
 
+  const handleBack = () => {
+    // Since this is a modal player, the back button should close the modal
+    // but keep the audio playing (typical music player behavior)
+    onClose();
+  };
+
   const handleClose = () => {
     audioService.stop();
     onClose();
@@ -141,11 +149,13 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
         >
           <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-                <Ionicons name="chevron-down" size={32} color="#FFFFFF" />
+              <TouchableOpacity onPress={handleBack} style={styles.closeButton}>
+                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Now Playing</Text>
-              <View style={{ width: 32 }} />
+              <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
 
             <View style={styles.content}>

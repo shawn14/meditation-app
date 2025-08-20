@@ -129,7 +129,7 @@ export default function MeditateScreen({ navigation }: any) {
       style={styles.meditationCard}
       onPress={() => {
         haptics.medium();
-        navigation.navigate('MeditationDetail', { meditation: item });
+        navigation.push('MeditationDetail' as never, { meditation: item } as never);
       }}
     >
       <View style={styles.meditationInfo}>
@@ -170,13 +170,13 @@ export default function MeditateScreen({ navigation }: any) {
             haptics.medium();
             // Get today's featured meditation
             const todaysMeditation = meditations[0]; // First featured meditation
-            navigation.navigate('MeditationDetail', { 
+            navigation.push('MeditationDetail' as never, { 
               meditation: {
                 ...todaysMeditation,
                 title: 'Cultivating Gratitude',
                 duration: '15'
               }
-            });
+            } as never);
           }}
         >
           <LinearGradient

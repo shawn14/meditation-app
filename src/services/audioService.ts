@@ -80,6 +80,10 @@ class AudioService {
         console.log('Cache check failed, using original URL:', cacheError);
       }
 
+      console.log(`AudioService - Loading track: ${track.title} (ID: ${track.id})`);
+      console.log(`AudioService - Audio URI: ${audioUri}`);
+      console.log(`AudioService - Using cache: ${isUsingCache}`);
+      
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioUri },
         { shouldPlay: true },
@@ -91,6 +95,8 @@ class AudioService {
       this.isPlaying = true;
       this.sessionStartTime = Date.now();
       this.playbackStatusCallback = onPlaybackStatusUpdate || null;
+      
+      console.log(`AudioService - Successfully loaded and started playing: ${track.title}`);
 
       return true;
     } catch (error: any) {
