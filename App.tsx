@@ -14,9 +14,24 @@ import SleepScreen from './src/screens/SleepScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import MeditationDetailScreen from './src/screens/MeditationDetailScreen';
 import AttributionScreen from './src/screens/AttributionScreen';
+import CheckInScreen from './src/screens/CheckInScreen';
+import SearchScreen from './src/screens/SearchScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="HomeMain" component={HomeScreen} />
+      <Stack.Screen name="CheckIn" component={CheckInScreen} />
+    </Stack.Navigator>
+  );
+}
 
 function MeditateStack() {
   return (
@@ -70,6 +85,8 @@ function TabNavigator() {
             iconName = focused ? 'leaf' : 'leaf-outline';
           } else if (route.name === 'Sleep') {
             iconName = focused ? 'moon' : 'moon-outline';
+          } else if (route.name === 'Search') {
+            iconName = focused ? 'search' : 'search-outline';
           } else {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -94,7 +111,7 @@ function TabNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen 
         name="Meditate" 
         component={MeditateStack}
@@ -103,6 +120,11 @@ function TabNavigator() {
       <Tab.Screen 
         name="Sleep" 
         component={SleepStack}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen 
+        name="Search" 
+        component={SearchScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen 

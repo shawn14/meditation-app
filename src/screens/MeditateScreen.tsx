@@ -164,7 +164,21 @@ export default function MeditateScreen({ navigation }: any) {
           <Text style={styles.subtitle}>Find your inner peace</Text>
         </View>
 
-        <TouchableOpacity style={styles.dailyCard}>
+        <TouchableOpacity 
+          style={styles.dailyCard}
+          onPress={() => {
+            haptics.medium();
+            // Get today's featured meditation
+            const todaysMeditation = meditations[0]; // First featured meditation
+            navigation.navigate('MeditationDetail', { 
+              meditation: {
+                ...todaysMeditation,
+                title: 'Cultivating Gratitude',
+                duration: '15'
+              }
+            });
+          }}
+        >
           <LinearGradient
             colors={['#6B4EFF', '#9B59B6']}
             style={styles.dailyGradient}
@@ -199,7 +213,12 @@ export default function MeditateScreen({ navigation }: any) {
         <View style={styles.meditationsSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Popular Sessions</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              haptics.light();
+              // Could navigate to a full list screen or expand the current list
+              // For now, just expand the category to show all
+              setSelectedCategory('all');
+            }}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>

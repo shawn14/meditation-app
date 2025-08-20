@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import React from 'react';
 
 // Haptic feedback utility functions
 export const haptics = {
@@ -90,19 +91,3 @@ export const haptics = {
   },
 };
 
-// HOC to add haptic feedback to TouchableOpacity
-export function withHaptics(
-  Component: any,
-  hapticType: keyof typeof haptics = 'medium'
-) {
-  return (props: any) => {
-    const handlePress = async (event: any) => {
-      await haptics[hapticType]();
-      if (props.onPress) {
-        props.onPress(event);
-      }
-    };
-
-    return <Component {...props} onPress={handlePress} />;
-  };
-}

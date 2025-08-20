@@ -33,6 +33,8 @@ export default function MeditationDetailScreen() {
   const route = useRoute();
   const { meditation } = route.params as { meditation: Meditation };
   const [showPlayer, setShowPlayer] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isDownloaded, setIsDownloaded] = useState(false);
 
   const handlePlay = async () => {
     await haptics.meditationStart();
@@ -117,15 +119,38 @@ export default function MeditationDetailScreen() {
           <View style={styles.relatedSection}>
             <Text style={styles.sectionTitle}>Similar Sessions</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {[1, 2, 3].map((item) => (
-                <TouchableOpacity key={item} style={styles.relatedCard}>
+              {[
+                { id: '1', title: 'Calm Mind', duration: '10 min', colors: ['#4ECDC4', '#44A08D'], icon: 'leaf' },
+                { id: '2', title: 'Focus Flow', duration: '15 min', colors: ['#667eea', '#764ba2'], icon: 'eye' },
+                { id: '3', title: 'Deep Rest', duration: '20 min', colors: ['#FF6B6B', '#FF8E53'], icon: 'moon' }
+              ].map((item) => (
+                <TouchableOpacity 
+                  key={item.id} 
+                  style={styles.relatedCard}
+                  onPress={() => {
+                    haptics.light();
+                    // Navigate to the same screen with new meditation data
+                    navigation.push('MeditationDetail', {
+                      meditation: {
+                        id: `related-${item.id}`,
+                        title: item.title,
+                        duration: item.duration.replace(' min', ''),
+                        instructor: meditation.instructor,
+                        description: `Experience the calming effects of ${item.title.toLowerCase()}.`,
+                        benefits: ['Reduces stress', 'Improves focus', 'Better sleep'],
+                        audioUrl: meditation.audioUrl, // Using same audio for demo
+                        isPro: false
+                      }
+                    });
+                  }}
+                >
                   <LinearGradient
-                    colors={['#4ECDC4', '#44A08D']}
+                    colors={item.colors}
                     style={styles.relatedGradient}
                   >
-                    <Ionicons name="leaf" size={24} color="#FFFFFF" />
-                    <Text style={styles.relatedTitle}>Calm Mind</Text>
-                    <Text style={styles.relatedDuration}>10 min</Text>
+                    <Ionicons name={item.icon as any} size={24} color="#FFFFFF" />
+                    <Text style={styles.relatedTitle}>{item.title}</Text>
+                    <Text style={styles.relatedDuration}>{item.duration}</Text>
                   </LinearGradient>
                 </TouchableOpacity>
               ))}
@@ -135,8 +160,21 @@ export default function MeditationDetailScreen() {
       </ScrollView>
 
       <View style={styles.bottomAction}>
-        <TouchableOpacity style={styles.downloadButton}>
-          <Ionicons name="download-outline" size={24} color="#6B4EFF" />
+        <TouchableOpacity 
+          style={styles.downloadButton}
+          onPress={() => {
+            haptics.light();
+            setIsDownloaded(!isDownloaded);
+            if (!isDownloaded) {
+              alert('Session downloaded for offline use');
+            }
+          }}
+        >
+          <Ionicons 
+            name={isDownloaded ? "download" : "download-outline"} 
+            size={24} 
+            color="#6B4EFF" 
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.playButton} onPress={handlePlay}>
           <LinearGradient
@@ -147,8 +185,21 @@ export default function MeditationDetailScreen() {
             <Text style={styles.playText}>Play Session</Text>
           </LinearGradient>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.favoriteButton}>
-          <Ionicons name="heart-outline" size={24} color="#6B4EFF" />
+        <TouchableOpacity 
+          style={styles.favoriteButton}
+          onPress={() => {
+            haptics.light();
+            setIsFavorite(!isFavorite);
+            if (!isFavorite) {
+              alert('Added to favorites');
+            }
+          }}
+        >
+          <Ionicons 
+            name={isFavorite ? "heart" : "heart-outline"} 
+            size={24} 
+            color={isFavorite ? "#FF6B6B" : "#6B4EFF"} 
+          />
         </TouchableOpacity>
       </View>
 

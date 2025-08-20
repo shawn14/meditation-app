@@ -200,7 +200,27 @@ export default function SleepScreen({ navigation }: any) {
 
         {activeTab === 'stories' ? (
           <>
-            <TouchableOpacity style={styles.featuredCard}>
+            <TouchableOpacity 
+              style={styles.featuredCard}
+              onPress={() => {
+                // Use the first ambient audio as the featured story
+                const featuredAudio = sleepAudioSources.find(a => a.id === 'ambient-1');
+                if (featuredAudio) {
+                  navigation.navigate('MeditationDetail', { 
+                    meditation: {
+                      id: 'featured-sleep',
+                      title: 'The Lavender Fields',
+                      duration: '32',
+                      instructor: 'Tamara Levitt',
+                      description: 'Journey through the peaceful lavender fields of Provence. This calming story will guide you to a restful sleep.',
+                      benefits: ['Deep sleep', 'Relaxation', 'Stress relief', 'Peaceful dreams'],
+                      audioUrl: featuredAudio.uri,
+                      isPro: false
+                    }
+                  });
+                }
+              }}
+            >
               <LinearGradient
                 colors={['#1A365D', '#2C5282']}
                 style={styles.featuredGradient}
@@ -245,7 +265,14 @@ export default function SleepScreen({ navigation }: any) {
         <View style={styles.sleepToolsSection}>
           <Text style={styles.sectionTitle}>Sleep Tools</Text>
           <View style={styles.toolsGrid}>
-            <TouchableOpacity style={styles.toolCard}>
+            <TouchableOpacity 
+              style={styles.toolCard}
+              onPress={() => {
+                // Navigate to sleep timer settings
+                // For now, we'll show an alert or navigate to a timer screen
+                alert('Sleep Timer: Set auto-stop for 15, 30, 45, or 60 minutes');
+              }}
+            >
               <LinearGradient
                 colors={['#4C51BF', '#667EEA']}
                 style={styles.toolGradient}

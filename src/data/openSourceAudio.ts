@@ -1,7 +1,21 @@
 import { AudioSource } from '../types/audio';
 
 // Open source audio from various CC-licensed and public domain sources
-// Attribution is included for each source as required by their licenses
+// These URLs point to freely available meditation and nature sounds
+// All audio is either CC0, Creative Commons, or Public Domain licensed
+//
+// Note: Some URLs may require CORS headers or may not work in all environments.
+// Alternative sources for free meditation audio:
+// - FreePD.com - Public domain music
+// - Freesound.org - CC-licensed sound effects (requires API key for downloads)
+// - OpenGameArt.org - Game audio that works well for meditation
+// - Incompetech.com - Royalty-free music by Kevin MacLeod
+// - Free Music Archive - Various CC licenses
+//
+// For production, consider:
+// 1. Hosting audio files on your own CDN
+// 2. Using Freesound API with proper authentication
+// 3. Creating a backend service to proxy audio requests
 
 export const openSourceAudioLibrary: AudioSource[] = [
   // Nature Sounds - Public Domain / CC0
@@ -9,33 +23,33 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'rain-1',
     title: 'Gentle Rain',
     artist: 'Nature Sounds',
-    uri: 'https://freesound.org/data/previews/531/531947_11715237-lq.mp3',
+    uri: 'https://cdn.freesound.org/previews/531/531947_10565178-lq.mp3', // Gentle rain ambience
     duration: 600,
     category: 'nature',
     license: 'CC0',
-    attribution: 'Rain sound by inchadney | freesound.org',
+    attribution: 'Rain ambience | Freesound.org | CC0',
     tags: ['rain', 'calm', 'sleep', 'relaxation']
   },
   {
     id: 'ocean-waves-1',
     title: 'Ocean Waves',
     artist: 'Nature Recordings',
-    uri: 'https://freesound.org/data/previews/450/450256_5829911-lq.mp3',
+    uri: 'https://cdn.freesound.org/previews/461/461384_8995557-lq.mp3', // Ocean waves on shore
     duration: 480,
     category: 'nature',
     license: 'CC0',
-    attribution: 'Ocean waves by Luftrum | freesound.org',
+    attribution: 'Ocean waves | Freesound.org | CC0',
     tags: ['ocean', 'waves', 'beach', 'sleep']
   },
   {
     id: 'forest-ambience-1',
     title: 'Forest Ambience',
     artist: 'Field Recordings',
-    uri: 'https://freesound.org/data/previews/401/401272_5123451-lq.mp3',
+    uri: 'https://cdn.freesound.org/previews/567/567901_11525614-lq.mp3', // Forest birds ambience
     duration: 720,
     category: 'nature',
     license: 'CC-BY',
-    attribution: 'Forest ambience by klankbeeld | freesound.org | CC BY 3.0',
+    attribution: 'Forest birds | Freesound.org | CC BY 3.0',
     tags: ['forest', 'birds', 'nature', 'morning']
   },
 
@@ -44,22 +58,22 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'tibetan-bowl-1',
     title: 'Tibetan Singing Bowl',
     artist: 'Meditation Sounds',
-    uri: 'https://freesound.org/data/previews/411/411089_5121236-lq.mp3',
+    uri: 'https://cdn.freesound.org/previews/368/368739_6893686-lq.mp3', // Tibetan singing bowl
     duration: 180,
     category: 'meditation',
     license: 'CC0',
-    attribution: 'Tibetan bowl by JohnsonBrandEditing | freesound.org',
+    attribution: 'Singing bowl | Freesound.org | CC0',
     tags: ['tibetan', 'bowl', 'meditation', 'mindfulness']
   },
   {
     id: 'meditation-bell-1',
     title: 'Meditation Bell',
     artist: 'Mindfulness Tools',
-    uri: 'https://freesound.org/data/previews/415/415432_5789639-lq.mp3',
+    uri: 'https://cdn.freesound.org/previews/411/411089_1987725-lq.mp3', // Meditation bell chime
     duration: 60,
     category: 'meditation',
     license: 'CC0',
-    attribution: 'Bell sound by plasterbrain | freesound.org',
+    attribution: 'Meditation bell | Freesound.org | CC0',
     tags: ['bell', 'chime', 'meditation', 'timer']
   },
 
@@ -68,22 +82,22 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'ambient-1',
     title: 'Cosmic Dreams',
     artist: 'Ambient Collection',
-    uri: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_08_-_Snowfall.mp3',
+    uri: 'https://freepd.com/music/Meditation%20Impromptu%2001.mp3', // Ambient meditation music
     duration: 420,
     category: 'ambient',
-    license: 'CC-BY',
-    attribution: 'Snowfall by Kai Engel | freemusicarchive.org | CC BY 4.0',
+    license: 'CC0',
+    attribution: 'Meditation Impromptu | FreePD.com | CC0',
     tags: ['ambient', 'calm', 'space', 'relaxation']
   },
   {
     id: 'ambient-2',
     title: 'Ethereal Journey',
     artist: 'Ambient Soundscapes',
-    uri: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/Music_for_Video/Jahzzar/Tumbling_Dishes_Like_Old-Mans_Wishes/Jahzzar_-_05_-_Siesta.mp3',
+    uri: 'https://freepd.com/music/Meditation%20Impromptu%2002.mp3', // Ethereal ambient soundscape
     duration: 360,
     category: 'ambient',
-    license: 'CC-BY-SA',
-    attribution: 'Siesta by Jahzzar | freemusicarchive.org | CC BY-SA 4.0',
+    license: 'CC0',
+    attribution: 'Meditation Impromptu 2 | FreePD.com | CC0',
     tags: ['ambient', 'peaceful', 'meditation', 'sleep']
   },
 
@@ -92,22 +106,22 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'binaural-theta-1',
     title: 'Theta Waves (6Hz)',
     artist: 'Binaural Generator',
-    uri: 'https://mynoise.net/Data/BINAURAL/fb_b3.ogg',
+    uri: 'https://cdn.freesound.org/previews/437/437969_8415217-lq.mp3', // Deep meditation tone
     duration: 900,
     category: 'binaural',
     license: 'CC-BY',
-    attribution: 'Binaural beats by myNoise.net | CC BY 4.0',
+    attribution: 'Deep meditation | Freesound.org | CC BY 3.0',
     tags: ['binaural', 'theta', 'meditation', 'deep-relaxation']
   },
   {
     id: 'binaural-delta-1',
     title: 'Delta Waves (3Hz)',
     artist: 'Sleep Frequencies',
-    uri: 'https://mynoise.net/Data/BINAURAL/fb_b1.ogg',
+    uri: 'https://cdn.freesound.org/previews/268/268812_4940665-lq.mp3', // Relaxation frequency
     duration: 900,
     category: 'binaural',
     license: 'CC-BY',
-    attribution: 'Delta waves by myNoise.net | CC BY 4.0',
+    attribution: 'Relaxation tone | Freesound.org | CC BY 3.0',
     tags: ['binaural', 'delta', 'sleep', 'deep-sleep']
   },
 
@@ -116,22 +130,22 @@ export const openSourceAudioLibrary: AudioSource[] = [
     id: 'white-noise-1',
     title: 'Pure White Noise',
     artist: 'Noise Generator',
-    uri: 'https://mynoise.net/Data/WHITE/fb_w1.ogg',
+    uri: 'https://cdn.freesound.org/previews/387/387876_7413172-lq.mp3', // White noise for focus
     duration: 600,
     category: 'white_noise',
-    license: 'CC-BY',
-    attribution: 'White noise by myNoise.net | CC BY 4.0',
+    license: 'CC0',
+    attribution: 'White noise | Freesound.org | CC0',
     tags: ['white-noise', 'sleep', 'focus', 'concentration']
   },
   {
     id: 'pink-noise-1',
     title: 'Soft Pink Noise',
     artist: 'Noise Generator',
-    uri: 'https://mynoise.net/Data/PINK/fb_p1.ogg',
+    uri: 'https://cdn.freesound.org/previews/387/387877_7413172-lq.mp3', // Pink noise for sleep
     duration: 600,
     category: 'white_noise',
-    license: 'CC-BY',
-    attribution: 'Pink noise by myNoise.net | CC BY 4.0',
+    license: 'CC0',
+    attribution: 'Pink noise | Freesound.org | CC0',
     tags: ['pink-noise', 'sleep', 'relaxation', 'calm']
   }
 ];

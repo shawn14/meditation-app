@@ -96,10 +96,35 @@ export default function ProfileScreen({ navigation }: any) {
             key={index} 
             style={styles.menuItem}
             onPress={() => {
-              if (item.action === 'attributions') {
-                navigation.navigate('Attribution');
+              switch (item.action) {
+                case 'attributions':
+                  navigation.navigate('Attribution');
+                  break;
+                case 'upgrade':
+                  alert('Upgrade to Pro: Unlock all meditations, sleep stories, and exclusive content!');
+                  break;
+                case 'progress':
+                  alert('My Progress: Track your meditation journey, streaks, and achievements');
+                  break;
+                case 'saved':
+                  alert('Saved Sessions: Access your favorite meditations and sleep stories');
+                  break;
+                case 'reminders':
+                  alert('Reminder Settings: Set daily meditation reminders');
+                  break;
+                case 'friends':
+                  alert('Friends: Connect with friends and share your meditation journey');
+                  break;
+                case 'gift':
+                  alert('Gift Subscription: Give the gift of mindfulness to someone special');
+                  break;
+                case 'help':
+                  alert('Help & Support: Visit our FAQ or contact support@meditationapp.com');
+                  break;
+                case 'privacy':
+                  alert('Privacy Policy: Your data is secure and never shared with third parties');
+                  break;
               }
-              // Handle other actions here
             }}
           >
             <View style={styles.menuLeft}>
@@ -113,7 +138,13 @@ export default function ProfileScreen({ navigation }: any) {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity 
+        style={styles.logoutButton}
+        onPress={() => {
+          alert('Sign Out: You have been successfully signed out');
+          // In a real app, this would clear auth tokens and navigate to login
+        }}
+      >
         <Text style={styles.logoutText}>Sign Out</Text>
       </TouchableOpacity>
 

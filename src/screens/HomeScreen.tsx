@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import MeditationTimer from '../components/MeditationTimer';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +18,7 @@ export default function HomeScreen({ navigation }: any) {
   const [greeting, setGreeting] = useState('');
   const [streak, setStreak] = useState(7);
   const [totalMinutes, setTotalMinutes] = useState(342);
+  const [showTimer, setShowTimer] = useState(false);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -56,7 +58,7 @@ export default function HomeScreen({ navigation }: any) {
     { id: '1', title: 'Breathe', icon: 'sync-outline', duration: '3 min' },
     { id: '2', title: 'Focus', icon: 'eye-outline', duration: '5 min' },
     { id: '3', title: 'Relax', icon: 'water-outline', duration: '10 min' },
-    { id: '4', title: 'Walk', icon: 'walk-outline', duration: '15 min' },
+    { id: '4', title: 'Timer', icon: 'timer-outline', duration: 'Custom' },
   ];
 
   return (
@@ -83,7 +85,41 @@ export default function HomeScreen({ navigation }: any) {
         <Text style={styles.sectionTitle}>Today's Recommendations</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {dailyRecommendations.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.recommendationCard}>
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.recommendationCard}
+              onPress={() => {
+                // Navigate based on the type of recommendation
+                if (item.type === 'Meditation') {
+                  navigation.navigate('Meditate', { 
+                    screen: 'MeditationDetail',
+                    params: { 
+                      category: 'featured',
+                      title: item.title,
+                      duration: item.duration
+                    }
+                  });
+                } else if (item.type === 'Sleep') {
+                  navigation.navigate('Sleep', {
+                    screen: 'MeditationDetail',
+                    params: {
+                      category: 'sleep',
+                      title: item.title,
+                      duration: item.duration
+                    }
+                  });
+                } else if (item.type === 'SOS') {
+                  navigation.navigate('Meditate', {
+                    screen: 'MeditationDetail',
+                    params: {
+                      category: 'anxiety',
+                      title: item.title,
+                      duration: item.duration
+                    }
+                  });
+                }
+              }}
+            >
               <LinearGradient
                 colors={item.gradient}
                 style={styles.cardGradient}
@@ -106,7 +142,27 @@ export default function HomeScreen({ navigation }: any) {
         <Text style={styles.sectionTitle}>Quick Sessions</Text>
         <View style={styles.quickGrid}>
           {quickActions.map((action) => (
-            <TouchableOpacity key={action.id} style={styles.quickCard}>
+            <TouchableOpacity 
+              key={action.id} 
+              style={styles.quickCard}
+              onPress={() => {
+                if (action.id === '4') {
+                  // Show timer for custom meditation
+                  setShowTimer(true);
+                } else {
+                  // Navigate to meditation detail with quick session
+                  navigation.navigate('Meditate', {
+                    screen: 'MeditationDetail',
+                    params: {
+                      category: 'quick',
+                      title: action.title,
+                      duration: action.duration,
+                      type: action.title.toLowerCase()
+                    }
+                  });
+                }
+              }}
+            >
               <Ionicons name={action.icon as any} size={28} color="#6B4EFF" />
               <Text style={styles.quickTitle}>{action.title}</Text>
               <Text style={styles.quickDuration}>{action.duration}</Text>
@@ -115,7 +171,10 @@ export default function HomeScreen({ navigation }: any) {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.dailyCheckIn}>
+      <TouchableOpacity 
+        style={styles.dailyCheckIn}
+        onPress={() => navigation.navigate('CheckIn')}
+      >
         <LinearGradient
           colors={['#6B4EFF', '#9B59B6']}
           style={styles.checkInGradient}
@@ -132,6 +191,15 @@ export default function HomeScreen({ navigation }: any) {
           </View>
         </LinearGradient>
       </TouchableOpacity>
+
+      <MeditationTimer
+        visible={showTimer}
+        onClose={() => setShowTimer(false)}
+        onComplete={() => {
+          setShowTimer(false);
+          alert('Meditation session complete! Great job!');
+        }}
+      />
     </ScrollView>
   );
 }
