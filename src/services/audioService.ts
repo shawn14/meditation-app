@@ -9,12 +9,19 @@ interface AudioTrack {
   duration: number;
 }
 
+export interface AudioError {
+  code: 'LOAD_FAILED' | 'PLAYBACK_ERROR' | 'NETWORK_ERROR' | 'PERMISSION_DENIED';
+  message: string;
+  originalError?: any;
+}
+
 class AudioService {
   private sound: Audio.Sound | null = null;
   private isPlaying: boolean = false;
   private currentTrack: AudioTrack | null = null;
   private playbackStatusCallback: ((status: AVPlaybackStatus) => void) | null = null;
   private sessionStartTime: number = 0;
+  private errorCallback: ((error: AudioError) => void) | null = null;
 
   constructor() {
     this.configureAudioMode();
@@ -34,31 +41,43 @@ class AudioService {
     }
   }
 
-  async loadAndPlayTrack(track: AudioTrack, onPlaybackStatusUpdate?: (status: AVPlaybackStatus) => void) {
+  async loadAndPlayTrack(
+    track: AudioTrack, 
+    onPlaybackStatusUpdate?: (status: AVPlaybackStatus) => void,
+    onError?: (error: AudioError) => void
+  ): Promise<boolean> {
     try {
+      this.errorCallback = onError || null;
+      
       if (this.sound) {
         await this.sound.unloadAsync();
       }
 
       // Try to get cached version first
       let audioUri = track.uri;
-      const cachedPath = await audioCacheService.getCachedAudio(track.id);
+      let isUsingCache = false;
       
-      if (cachedPath) {
-        audioUri = cachedPath;
-        console.log(`Playing cached audio for ${track.title}`);
-      } else {
-        console.log(`Streaming audio for ${track.title}`);
-        // Optionally cache in background
-        audioCacheService.cacheAudio({
-          id: track.id,
-          title: track.title,
-          uri: track.uri,
-          duration: track.duration,
-          artist: '',
-          category: 'meditation',
-          license: 'CC-BY',
-        }).catch(err => console.log('Background cache failed:', err));
+      try {
+        const cachedPath = await audioCacheService.getCachedAudio(track.id);
+        if (cachedPath) {
+          audioUri = cachedPath;
+          isUsingCache = true;
+          console.log(`Playing cached audio for ${track.title}`);
+        } else {
+          console.log(`Streaming audio for ${track.title}`);
+          // Optionally cache in background
+          audioCacheService.cacheAudio({
+            id: track.id,
+            title: track.title,
+            uri: track.uri,
+            duration: track.duration,
+            artist: '',
+            category: 'meditation',
+            license: 'CC-BY',
+          }).catch(err => console.log('Background cache failed:', err));
+        }
+      } catch (cacheError) {
+        console.log('Cache check failed, using original URL:', cacheError);
       }
 
       const { sound } = await Audio.Sound.createAsync(
@@ -74,8 +93,32 @@ class AudioService {
       this.playbackStatusCallback = onPlaybackStatusUpdate || null;
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading audio:', error);
+      
+      let audioError: AudioError;
+      
+      if (error.message?.includes('network') || error.message?.includes('internet')) {
+        audioError = {
+          code: 'NETWORK_ERROR',
+          message: 'Unable to load audio. Please check your internet connection.',
+          originalError: error
+        };
+      } else if (error.message?.includes('permission')) {
+        audioError = {
+          code: 'PERMISSION_DENIED',
+          message: 'Audio permissions are required to play content.',
+          originalError: error
+        };
+      } else {
+        audioError = {
+          code: 'LOAD_FAILED',
+          message: 'Failed to load audio. Please try again.',
+          originalError: error
+        };
+      }
+      
+      this.errorCallback?.(audioError);
       return false;
     }
   }
@@ -85,25 +128,55 @@ class AudioService {
       this.playbackStatusCallback(status);
     }
 
-    if (status.isLoaded && status.didJustFinish) {
-      this.handleSessionComplete();
-    }
-  }
-
-  async play() {
-    if (this.sound) {
-      await this.sound.playAsync();
-      this.isPlaying = true;
-      if (!this.sessionStartTime) {
-        this.sessionStartTime = Date.now();
+    if (status.isLoaded) {
+      if (status.didJustFinish) {
+        this.handleSessionComplete();
+      }
+      
+      // Check for playback errors
+      if (status.error) {
+        console.error('Playback error:', status.error);
+        this.errorCallback?.({
+          code: 'PLAYBACK_ERROR',
+          message: 'An error occurred during playback.',
+          originalError: status.error
+        });
       }
     }
   }
 
+  async play() {
+    try {
+      if (this.sound) {
+        await this.sound.playAsync();
+        this.isPlaying = true;
+        if (!this.sessionStartTime) {
+          this.sessionStartTime = Date.now();
+        }
+      }
+    } catch (error: any) {
+      console.error('Error playing audio:', error);
+      this.errorCallback?.({
+        code: 'PLAYBACK_ERROR',
+        message: 'Failed to play audio. Please try again.',
+        originalError: error
+      });
+    }
+  }
+
   async pause() {
-    if (this.sound) {
-      await this.sound.pauseAsync();
-      this.isPlaying = false;
+    try {
+      if (this.sound) {
+        await this.sound.pauseAsync();
+        this.isPlaying = false;
+      }
+    } catch (error: any) {
+      console.error('Error pausing audio:', error);
+      this.errorCallback?.({
+        code: 'PLAYBACK_ERROR',
+        message: 'Failed to pause audio.',
+        originalError: error
+      });
     }
   }
 
@@ -116,8 +189,17 @@ class AudioService {
   }
 
   async setPosition(position: number) {
-    if (this.sound) {
-      await this.sound.setPositionAsync(position);
+    try {
+      if (this.sound) {
+        await this.sound.setPositionAsync(position);
+      }
+    } catch (error: any) {
+      console.error('Error setting position:', error);
+      this.errorCallback?.({
+        code: 'PLAYBACK_ERROR',
+        message: 'Failed to seek to position.',
+        originalError: error
+      });
     }
   }
 
@@ -218,4 +300,4 @@ class AudioService {
 }
 
 export default new AudioService();
-export type { AudioTrack };
+export type { AudioTrack, AudioError };

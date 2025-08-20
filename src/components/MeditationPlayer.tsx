@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { BlurView } from 'expo-blur';
 import { AVPlaybackStatus } from 'expo-av';
-import audioService, { AudioTrack } from '../services/audioService';
+import audioService, { AudioTrack, AudioError } from '../services/audioService';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,6 +29,7 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<AudioError | null>(null);
 
   useEffect(() => {
     if (visible && track) {
@@ -46,7 +47,14 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
     if (!track) return;
 
     setIsLoading(true);
-    const success = await audioService.loadAndPlayTrack(track, onPlaybackStatusUpdate);
+    setError(null);
+    
+    const success = await audioService.loadAndPlayTrack(
+      track, 
+      onPlaybackStatusUpdate,
+      handleAudioError
+    );
+    
     if (success) {
       setIsPlaying(true);
       setDuration(track.duration * 1000);
@@ -101,6 +109,17 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  const handleAudioError = (audioError: AudioError) => {
+    setError(audioError);
+    setIsLoading(false);
+    setIsPlaying(false);
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    loadTrack();
+  };
+
   const handleClose = () => {
     audioService.stop();
     onClose();
@@ -130,6 +149,22 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
             </View>
 
             <View style={styles.content}>
+              {error ? (
+                <View style={styles.errorContainer}>
+                  <Ionicons name="warning-outline" size={48} color="#FF6B6B" />
+                  <Text style={styles.errorTitle}>Unable to Play Audio</Text>
+                  <Text style={styles.errorMessage}>{error.message}</Text>
+                  <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+                    <LinearGradient
+                      colors={['#6B4EFF', '#9B59B6']}
+                      style={styles.retryGradient}
+                    >
+                      <Text style={styles.retryText}>Try Again</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+              <>
               <View style={styles.artwork}>
                 <LinearGradient
                   colors={['#6B4EFF', '#9B59B6']}
@@ -226,6 +261,8 @@ export default function MeditationPlayer({ visible, track, onClose }: Meditation
                   <Text style={styles.actionText}>Favorite</Text>
                 </TouchableOpacity>
               </View>
+              </>
+              )}
             </View>
           </SafeAreaView>
         </LinearGradient>
@@ -366,5 +403,38 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#8E8E93',
     marginTop: 5,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: '#8E8E93',
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 24,
+  },
+  retryButton: {
+    marginTop: 10,
+  },
+  retryGradient: {
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+  },
+  retryText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });

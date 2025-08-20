@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { openSourceAudioLibrary, audioCategories, getFeaturedAudio } from '../data/openSourceAudio';
+import { haptics } from '../utils/haptics';
 
 const { width } = Dimensions.get('window');
 
@@ -93,7 +94,10 @@ export default function MeditateScreen({ navigation }: any) {
         styles.categoryCard,
         selectedCategory === item.id && styles.selectedCategory,
       ]}
-      onPress={() => setSelectedCategory(item.id)}
+      onPress={() => {
+        haptics.light();
+        setSelectedCategory(item.id);
+      }}
     >
       <LinearGradient
         colors={selectedCategory === item.id ? item.gradient : ['#1C1C1E', '#1C1C1E']}
@@ -123,7 +127,10 @@ export default function MeditateScreen({ navigation }: any) {
   const renderMeditation = ({ item }: { item: Meditation }) => (
     <TouchableOpacity 
       style={styles.meditationCard}
-      onPress={() => navigation.navigate('MeditationDetail', { meditation: item })}
+      onPress={() => {
+        haptics.medium();
+        navigation.navigate('MeditationDetail', { meditation: item });
+      }}
     >
       <View style={styles.meditationInfo}>
         <View style={styles.meditationHeader}>

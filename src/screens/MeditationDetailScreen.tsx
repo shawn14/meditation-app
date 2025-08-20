@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MeditationPlayer from '../components/MeditationPlayer';
 import { AudioTrack } from '../services/audioService';
+import { haptics } from '../utils/haptics';
 
 const { width } = Dimensions.get('window');
 
@@ -33,7 +34,8 @@ export default function MeditationDetailScreen() {
   const { meditation } = route.params as { meditation: Meditation };
   const [showPlayer, setShowPlayer] = useState(false);
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
+    await haptics.meditationStart();
     const track: AudioTrack = {
       id: meditation.id,
       title: meditation.title,

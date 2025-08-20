@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { haptics } from '../utils/haptics';
 
 const { width, height } = Dimensions.get('window');
 
@@ -83,8 +84,14 @@ export default function BreathingExercise({ visible, onClose }: BreathingExercis
         const nextPhase = getNextPhase(phase);
         setPhase(nextPhase);
         
+        // Haptic feedback for phase transitions
         if (nextPhase === 'inhale') {
+          haptics.breathingIn();
           setCycles(prev => prev + 1);
+        } else if (nextPhase === 'exhale') {
+          haptics.breathingOut();
+        } else if (nextPhase === 'hold') {
+          haptics.light();
         }
       }, timings[phase] * 1000);
     }

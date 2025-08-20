@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ErrorBoundary from './src/components/ErrorBoundary';
+import { NetworkStatus } from './src/components/NetworkStatus';
 
 import HomeScreen from './src/screens/HomeScreen';
 import MeditateScreen from './src/screens/MeditateScreen';
@@ -114,11 +116,14 @@ function TabNavigator() {
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <TabNavigator />
-      </NavigationContainer>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <StatusBar style="light" />
+          <TabNavigator />
+          <NetworkStatus />
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
